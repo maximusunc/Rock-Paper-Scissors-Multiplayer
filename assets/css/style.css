@@ -1,0 +1,29 @@
+h1 {
+	font-size: 50px;
+	text-align: center;
+}
+#container {
+	width: 75%;
+	margin: auto;
+}
+#player1, #results, #player2 {
+	height: 350px;
+	width: 300px;
+	border: 2px solid black;
+	display: inline-block;
+	margin: 26px;
+}
+#chatbox {
+	width: 90%;
+	height: 200px;
+	border: 1px solid black;
+	margin: auto;
+}
+#taunt {
+	width: 90%;
+	margin: auto;
+	margin-top: 10px;
+}
+#messageBox {
+	width: 94%;
+}
