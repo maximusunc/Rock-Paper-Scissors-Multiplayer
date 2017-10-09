@@ -27,12 +27,26 @@ h1 {
 	height: 200px;
 	border: 1px solid black;
 	margin: auto;
+	overflow: auto;
 }
-#taunt {
+#messageBar {
 	width: 90%;
 	margin: auto;
 	margin-top: 10px;
 }
 #messageBox {
 	width: 94%;
+}
+#playerName {
+	width: 150px;
+}
+#player1 p {
+	position: absolute;
+	bottom: 25px;
+	left: 300px;
+}
+#player2 p {
+	position: absolute;
+	bottom: 25px;
+	right: 308px;
 }
