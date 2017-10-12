@@ -18,6 +18,8 @@ var playerTurn = database.ref();
 var player;
 var p1snapshot;
 var p2snapshot;
+var p1result;
+var p2result;
 var p1 = "Waiting for Player 1";
 var p2 = "Waiting for Player 2";
 var wins1 = 0;
@@ -109,56 +111,57 @@ $("#enterPlayer").on("click", function() {
 });
 
 var rpsResults = function() {
+	console.log("test");
 	player1.once("value", function(snapshot) {
-		p1snapshot = snapshot;
+		p1result = snapshot;
 	}, function(errorObject) {
 		console.log("The read failed: " + errorObject.code);
 	});
 	player2.once("value", function(snapshot) {
-		p2snapshot = snapshot;
+		p2result = snapshot;
 	}, function(errorObject) {
 		console.log("The read failed: " + errorObject.code);
 	});
-	if (p1snapshot.val().choice == "Rock" && p2snapshot.val().choice == "Scissors") {
-		$("#p1choices").html("<br><br><br><h1>" + p1snapshot.val().choice + "</h1>");
-		$("#p2choices").html("<br><br><br><h1>" + p2snapshot.val().choice + "</h1>");
-		$("#results").html("<br><br><h1>" + p1 + " wins!</h1>");
+	if (p1result.val().choice == p2result.val().choice) {
+		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
+		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
+		$("#results").html("<br><br><br><h1>Tie Game!</h1>");
+	} else if (p1result.val().choice == "Rock" && p2result.val().choice == "Scissors") {
+		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
+		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
+		$("#results").html("<br><br><br><h1>" + p1 + " wins!</h1>");
 		wins1++;
 		losses2++;
-	} else if (p1snapshot.val().choice == "Rock" && p2snapshot.val().choice == "Paper") {
-		$("#p1choices").html("<br><br><br><h1>" + p1snapshot.val().choice + "</h1>");
-		$("#p2choices").html("<br><br><br><h1>" + p2snapshot.val().choice + "</h1>");
-		$("#results").html("<br><br><h1>" + p2 + " wins!</h1>");
+	} else if (p1result.val().choice == "Rock" && p2result.val().choice == "Paper") {
+		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
+		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
+		$("#results").html("<br><br><br><h1>" + p2 + " wins!</h1>");
 		wins2++;
 		losses1++;
-	} else if (p1snapshot.val().choice == "Paper" && p2snapshot.val().choice == "Scissors") {
-		$("#p1choices").html("<br><br><br><h1>" + p1snapshot.val().choice + "</h1>");
-		$("#p2choices").html("<br><br><br><h1>" + p2snapshot.val().choice + "</h1>");
-		$("#results").html("<br><br><h1>" + p2 + " wins!</h1>");
+	} else if (p1result.val().choice == "Paper" && p2result.val().choice == "Scissors") {
+		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
+		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
+		$("#results").html("<br><br><br><h1>" + p2 + " wins!</h1>");
 		wins2++;
 		losses1++;
-	} else if (p1snapshot.val().choice == "Paper" && p2snapshot.val().choice == "Rock") {
-		$("#p1choices").html("<br><br><br><h1>" + p1snapshot.val().choice + "</h1>");
-		$("#p2choices").html("<br><br><br><h1>" + p2snapshot.val().choice + "</h1>");
-		$("#results").html("<br><br><h1>" + p1 + " wins!</h1>");
+	} else if (p1result.val().choice == "Paper" && p2result.val().choice == "Rock") {
+		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
+		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
+		$("#results").html("<br><br><br><h1>" + p1 + " wins!</h1>");
 		wins1++;
 		losses2++;
-	} else if (p1snapshot.val().choice == "Scissors" && p2snapshot.val().choice == "Paper") {
-		$("#p1choices").html("<br><br><br><h1>" + p1snapshot.val().choice + "</h1>");
-		$("#p2choices").html("<br><br><br><h1>" + p2snapshot.val().choice + "</h1>");
-		$("#results").html("<br><br><h1>" + p1 + " wins!</h1>");
+	} else if (p1result.val().choice == "Scissors" && p2result.val().choice == "Paper") {
+		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
+		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
+		$("#results").html("<br><br><br><h1>" + p1 + " wins!</h1>");
 		wins1++;
 		losses2++;
-	} else if (p1snapshot.val().choice == "Scissors" && p2snapshot.val().choice == "Rock") {
-		$("#p1choices").html("<br><br><br><h1>" + p1snapshot.val().choice + "</h1>");
-		$("#p2choices").html("<br><br><br><h1>" + p2snapshot.val().choice + "</h1>");
-		$("#results").html("<br><br><h1>" + p2 + " wins!</h1>");
+	} else if (p1result.val().choice == "Scissors" && p2result.val().choice == "Rock") {
+		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
+		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
+		$("#results").html("<br><br><br><h1>" + p2 + " wins!</h1>");
 		wins2++;
 		losses1++;
-	} else if (p1snapshot.val().choice == p2snapshot.val().choice) {
-		$("#p1choices").html("<br><br><br><h1>" + p1snapshot.val().choice + "</h1>");
-		$("#p2choices").html("<br><br><br><h1>" + p2snapshot.val().choice + "</h1>");
-		$("#results").html("<br><br><h1>Tie Game!</h1>");
 	};
 };
 
@@ -196,17 +199,17 @@ playerTurn.on("value", function(snapshot) {
 		} else if (snapshot.val().turn == 3) {
 			$("#playerTurn").html("");
 			rpsResults();
+			player1.update({
+				wins: wins1,
+				losses: losses1
+			});
+			player2.update({
+				wins: wins2,
+				losses: losses2
+			});
 			setTimeout(function() {
 				playerTurn.update({
 					turn: 1
-				});
-				player1.update({
-					wins: wins1,
-					losses: losses1
-				});
-				player2.update({
-					wins: wins2,
-					losses: losses2
 				});
 				$("#results").html("");
 				$("#p2choices").html("");
@@ -216,6 +219,8 @@ playerTurn.on("value", function(snapshot) {
 		};
 		// If both players leave, turn is deleted from database to reset for next game
 		if (snapshot.val().players == null) {
+			$("#player1").css("border-color", "black");
+			$("#player2").css("border-color", "black");
 			playerTurn.set({
 			});
 		};
@@ -238,12 +243,12 @@ $("#p2choices").on("click", "div", function() {
 	var choice = $(this).text();
 	$("#p2choices").html("<br><br><br><h1>" + choice + "</h1>");
 	setTimeout(function() {
-		playerTurn.update({
-			turn: 3
-		});
 		player2.update({
 			choice: choice
 		}); 
+		playerTurn.update({
+			turn: 3
+		});
 	}, 500);
 });
 
