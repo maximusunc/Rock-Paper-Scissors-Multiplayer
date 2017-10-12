@@ -2,7 +2,10 @@ h1 {
 	font-size: 50px;
 	text-align: center;
 }
-#playerInfo, #player1Info, #player2Info, #player1Turn, #player2Turn {
+h2 {
+	font-size: 30px;
+}
+#playerInfo, #playerTurn {
 	margin: auto;
 	width: 20%;
 	margin-top: 15px;
@@ -20,6 +23,7 @@ h1 {
 	border: 2px solid black;
 	margin: 26px;
 	text-align: center;
+	position: relative;
 }
 #chatbox {
 	clear: both;
@@ -40,13 +44,11 @@ h1 {
 #playerName {
 	width: 150px;
 }
-#player1 p {
+#p1stats, #p2stats {
 	position: absolute;
-	bottom: 25px;
-	left: 300px;
+	bottom: 0px;
+	left: 90px;
 }
-#player2 p {
-	position: absolute;
-	bottom: 25px;
-	right: 308px;
-}
+
+
+
