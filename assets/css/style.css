@@ -49,6 +49,10 @@ h2 {
 	bottom: 0px;
 	left: 90px;
 }
+#p1choices div, #p2choices div {
+	margin-top: 25px;
+	margin-bottom: 25px;
+}
 
 
 

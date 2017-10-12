@@ -209,16 +209,16 @@ playerTurn.on("value", function(snapshot) {
 		// If it's player 1's turn, display choices on their specific page
 		if (snapshot.val().turn == 1 && playerNum == 1) {
 			$("#p1choices").empty();
-			$("#p1choices").append("<div><br>Rock</div>");
-			$("#p1choices").append("<div><br><br>Paper</div>");
-			$("#p1choices").append("<div><br><br>Scissors</div>");
+			$("#p1choices").append("<div>Rock</div>");
+			$("#p1choices").append("<div>Paper</div>");
+			$("#p1choices").append("<div>Scissors</div>");
 			$("#playerTurn").html("It's your turn!");
 		// If it's player 2's turn, display choices on their specific page
 		} else if (snapshot.val().turn == 2 && playerNum == 2) {
 			$("#p2choices").empty();
-			$("#p2choices").append("<div><br>Rock</div>");
-			$("#p2choices").append("<div><br><br>Paper</div>");
-			$("#p2choices").append("<div><br><br>Scissors</div>");
+			$("#p2choices").append("<div>Rock</div>");
+			$("#p2choices").append("<div>Paper</div>");
+			$("#p2choices").append("<div>Scissors</div>");
 			$("#playerTurn").html("It's your turn!");
 		// After both turns, show result to both pages and then make player 1's turn
 		} else if (snapshot.val().turn == 3) {
@@ -261,22 +261,22 @@ $("#p2choices").on("click", "div", function() {
 });
 
 // Operation of the chat box below the player cards
-// $("#taunt").on("click", function() {
-// 	event.preventDefault();
-// 	var message = $("#messageBox").val().trim();
-// 	if (playerNum == 1) {
-// 		p1chat.update({
-// 			chat: message
-// 		});
-// 	} else if (playerNum == 2) {
-// 		p2chat.update({
-// 			chat: message
-// 		});
-// 	};
-// 	$("#messageBox").val("");
-// });
+$("#taunt").on("click", function() {
+	event.preventDefault();
+	var message = $("#messageBox").val().trim();
+	if (playerNum == 1) {
+		p1chat.update({
+			chat: message
+		});
+	} else if (playerNum == 2) {
+		p2chat.update({
+			chat: message
+		});
+	};
+	$("#messageBox").val("");
+});
 
-// playerChat.on("child_added", function(snapshot) {
-// 	$("#chatbox").append(snapshot.val().p1chat);
-// })
+playerChat.on("child_added", function(snapshot) {
+	$("#chatbox").append(snapshot.val().p1chat);
+});
 
