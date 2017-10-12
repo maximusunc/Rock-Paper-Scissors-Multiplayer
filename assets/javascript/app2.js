@@ -12,9 +12,12 @@ firebase.initializeApp(config);
 var database = firebase.database();
 
 // each player enters in as their own folder in the database
+var playerTurn = database.ref();
 var player1 = database.ref("/players/player1");
 var player2 = database.ref("/players/player2");
-var playerTurn = database.ref();
+var playerChat = database.ref("/chat");
+var p1chat = database.ref("/chat/p1");
+var p2chat = database.ref("/chat/p2");
 var player;
 var p1snapshot;
 var p2snapshot;
@@ -82,12 +85,12 @@ $("#enterPlayer").on("click", function() {
 	// if there is no player 1
 	if (!p1snapshot.exists()) {
 		playerNum = 1;
+		player1.onDisconnect().remove();
 		player1.set({
 			player: player,
-			wins: wins1,
-			losses: losses1
+			wins: 0,
+			losses: 0
 		});
-		player1.onDisconnect().remove();
 		$("#playerInfo").html("Hi " + player + "! You are Player 1");
 		if (!p2snapshot.exists()) {
 			$("#playerTurn").html("Waiting for Player 2 to join...");
@@ -95,12 +98,12 @@ $("#enterPlayer").on("click", function() {
 	// if there is no player 2
 	} else if (!p2snapshot.exists()) {
 		playerNum = 2;
+		player2.onDisconnect().remove();
 		player2.set({
 			player: player,
-			wins: wins2,
-			losses: losses2
+			wins: 0,
+			losses: 0
 		});
-		player2.onDisconnect().remove();
 		playerTurn.update({
 			turn: 1
 		});
@@ -112,8 +115,9 @@ $("#enterPlayer").on("click", function() {
 	};
 });
 
+
+// Results checker
 var rpsResults = function() {
-	console.log("test");
 	player1.once("value", function(snapshot) {
 		p1result = snapshot;
 	}, function(errorObject) {
@@ -124,49 +128,68 @@ var rpsResults = function() {
 	}, function(errorObject) {
 		console.log("The read failed: " + errorObject.code);
 	});
-	if (p1result.val().choice == p2result.val().choice) {
-		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
-		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-		$("#results").html("<br><br><br><br><br><h1>Tie Game!</h1>");
-	} else if (p1result.val().choice == "Rock" && p2result.val().choice == "Scissors") {
-		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
-		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-		$("#results").html("<br><br><br><br><br><h1>" + p1 + " wins!</h1>");
-		wins1++;
-		losses2++;
-	} else if (p1result.val().choice == "Rock" && p2result.val().choice == "Paper") {
-		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
-		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-		$("#results").html("<br><br><br><br><br><h1>" + p2 + " wins!</h1>");
-		wins2++;
-		losses1++;
-	} else if (p1result.val().choice == "Paper" && p2result.val().choice == "Scissors") {
-		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
-		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-		$("#results").html("<br><br><br><br><br><h1>" + p2 + " wins!</h1>");
-		wins2++;
-		losses1++;
-	} else if (p1result.val().choice == "Paper" && p2result.val().choice == "Rock") {
-		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
-		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-		$("#results").html("<br><br><br><br><br><h1>" + p1 + " wins!</h1>");
-		wins1++;
-		losses2++;
-	} else if (p1result.val().choice == "Scissors" && p2result.val().choice == "Paper") {
-		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
-		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-		$("#results").html("<br><br><br><br><br><h1>" + p1 + " wins!</h1>");
-		wins1++;
-		losses2++;
-	} else if (p1result.val().choice == "Scissors" && p2result.val().choice == "Rock") {
-		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
-		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-		$("#results").html("<br><br><br><br><br><h1>" + p2 + " wins!</h1>");
-		wins2++;
-		losses1++;
+	if (p1result.val() !== null && p2result.val() !== null) {
+		if (p1result.val().choice == p2result.val().choice) {
+			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
+			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
+			$("#results").html("<br><br><br><br><br><h1>Tie Game!</h1>");
+		} else if (p1result.val().choice == "Rock" && p2result.val().choice == "Scissors") {
+			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
+			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
+			$("#results").html("<br><br><br><br><br><h1>" + p1 + " wins!</h1>");
+			wins1++;
+			losses2++;
+		} else if (p1result.val().choice == "Rock" && p2result.val().choice == "Paper") {
+			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
+			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
+			$("#results").html("<br><br><br><br><br><h1>" + p2 + " wins!</h1>");
+			wins2++;
+			losses1++;
+		} else if (p1result.val().choice == "Paper" && p2result.val().choice == "Scissors") {
+			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
+			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
+			$("#results").html("<br><br><br><br><br><h1>" + p2 + " wins!</h1>");
+			wins2++;
+			losses1++;
+		} else if (p1result.val().choice == "Paper" && p2result.val().choice == "Rock") {
+			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
+			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
+			$("#results").html("<br><br><br><br><br><h1>" + p1 + " wins!</h1>");
+			wins1++;
+			losses2++;
+		} else if (p1result.val().choice == "Scissors" && p2result.val().choice == "Paper") {
+			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
+			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
+			$("#results").html("<br><br><br><br><br><h1>" + p1 + " wins!</h1>");
+			wins1++;
+			losses2++;
+		} else if (p1result.val().choice == "Scissors" && p2result.val().choice == "Rock") {
+			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
+			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
+			$("#results").html("<br><br><br><br><br><h1>" + p2 + " wins!</h1>");
+			wins2++;
+			losses1++;
+		};
+		setTimeout(function() {
+			playerTurn.update({
+				turn: 1
+			});
+			player1.update({
+				wins: wins1,
+				losses: losses1
+			});
+			player2.update({
+				wins: wins2,
+				losses: losses2
+			});
+			$("#results").html("");
+			$("#p2choices").html("");
+			$("#player2").css("border-color", "black");
+			}, 1000*4);
 	};
 };
 
+// Checks whos turn it is
 playerTurn.on("value", function(snapshot) {
 	if (snapshot.val() !== null) {
 		// Highlights the border around whoever's turn it is
@@ -201,23 +224,6 @@ playerTurn.on("value", function(snapshot) {
 		} else if (snapshot.val().turn == 3) {
 			$("#playerTurn").html("");
 			rpsResults();
-			player1.update({
-				wins: wins1,
-				losses: losses1
-			});
-			player2.update({
-				wins: wins2,
-				losses: losses2
-			});
-			setTimeout(function() {
-				playerTurn.update({
-					turn: 1
-				});
-				$("#results").html("");
-				$("#p2choices").html("");
-				$("#player2").css("border-color", "black");
-				}, 1000*4);
-
 		};
 		// If both players leave, turn is deleted from database to reset for next game
 		if (snapshot.val().players == null) {
@@ -255,10 +261,22 @@ $("#p2choices").on("click", "div", function() {
 });
 
 // Operation of the chat box below the player cards
-$("#taunt").on("click", function() {
-	event.preventDefault();
-	var message = $("#messageBox").val().trim();
-	$("#chatbox").append(message, "<br>");
-	$("#messageBox").val("");
-});
+// $("#taunt").on("click", function() {
+// 	event.preventDefault();
+// 	var message = $("#messageBox").val().trim();
+// 	if (playerNum == 1) {
+// 		p1chat.update({
+// 			chat: message
+// 		});
+// 	} else if (playerNum == 2) {
+// 		p2chat.update({
+// 			chat: message
+// 		});
+// 	};
+// 	$("#messageBox").val("");
+// });
+
+// playerChat.on("child_added", function(snapshot) {
+// 	$("#chatbox").append(snapshot.val().p1chat);
+// })
 
