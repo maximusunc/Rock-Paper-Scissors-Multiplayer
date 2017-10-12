@@ -20,8 +20,8 @@ var p1snapshot;
 var p2snapshot;
 var p1result;
 var p2result;
-var p1 = "Waiting for Player 1";
-var p2 = "Waiting for Player 2";
+var p1;
+var p2;
 var wins1 = 0;
 var wins2 = 0;
 var losses1 = 0;
@@ -89,7 +89,9 @@ $("#enterPlayer").on("click", function() {
 		});
 		player1.onDisconnect().remove();
 		$("#playerInfo").html("Hi " + player + "! You are Player 1");
-		$("#playerTurn").html("Waiting for Player 2 to join...");
+		if (!p2snapshot.exists()) {
+			$("#playerTurn").html("Waiting for Player 2 to join...");
+		};
 	// if there is no player 2
 	} else if (!p2snapshot.exists()) {
 		playerNum = 2;
@@ -125,41 +127,41 @@ var rpsResults = function() {
 	if (p1result.val().choice == p2result.val().choice) {
 		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
 		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-		$("#results").html("<br><br><br><h1>Tie Game!</h1>");
+		$("#results").html("<br><br><br><br><br><h1>Tie Game!</h1>");
 	} else if (p1result.val().choice == "Rock" && p2result.val().choice == "Scissors") {
 		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
 		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-		$("#results").html("<br><br><br><h1>" + p1 + " wins!</h1>");
+		$("#results").html("<br><br><br><br><br><h1>" + p1 + " wins!</h1>");
 		wins1++;
 		losses2++;
 	} else if (p1result.val().choice == "Rock" && p2result.val().choice == "Paper") {
 		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
 		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-		$("#results").html("<br><br><br><h1>" + p2 + " wins!</h1>");
+		$("#results").html("<br><br><br><br><br><h1>" + p2 + " wins!</h1>");
 		wins2++;
 		losses1++;
 	} else if (p1result.val().choice == "Paper" && p2result.val().choice == "Scissors") {
 		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
 		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-		$("#results").html("<br><br><br><h1>" + p2 + " wins!</h1>");
+		$("#results").html("<br><br><br><br><br><h1>" + p2 + " wins!</h1>");
 		wins2++;
 		losses1++;
 	} else if (p1result.val().choice == "Paper" && p2result.val().choice == "Rock") {
 		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
 		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-		$("#results").html("<br><br><br><h1>" + p1 + " wins!</h1>");
+		$("#results").html("<br><br><br><br><br><h1>" + p1 + " wins!</h1>");
 		wins1++;
 		losses2++;
 	} else if (p1result.val().choice == "Scissors" && p2result.val().choice == "Paper") {
 		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
 		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-		$("#results").html("<br><br><br><h1>" + p1 + " wins!</h1>");
+		$("#results").html("<br><br><br><br><br><h1>" + p1 + " wins!</h1>");
 		wins1++;
 		losses2++;
 	} else if (p1result.val().choice == "Scissors" && p2result.val().choice == "Rock") {
 		$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
 		$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-		$("#results").html("<br><br><br><h1>" + p2 + " wins!</h1>");
+		$("#results").html("<br><br><br><br><br><h1>" + p2 + " wins!</h1>");
 		wins2++;
 		losses1++;
 	};
