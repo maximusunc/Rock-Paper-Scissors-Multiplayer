@@ -16,8 +16,6 @@ var playerTurn = database.ref();
 var player1 = database.ref("/players/player1");
 var player2 = database.ref("/players/player2");
 var playerChat = database.ref("/chat");
-var p1chat = database.ref("/chat/p1");
-var p2chat = database.ref("/chat/p2");
 var player;
 var p1snapshot;
 var p2snapshot;
@@ -85,7 +83,14 @@ $("#enterPlayer").on("click", function() {
 	// if there is no player 1
 	if (!p1snapshot.exists()) {
 		playerNum = 1;
+		// if player disconnects, remove them from the database
 		player1.onDisconnect().remove();
+		// if player disconnects, display in chat box
+		database.ref("/chat/connected").onDisconnect().update({
+			player: player,
+			taunt: " has disconnected",
+			dateAdded: firebase.database.ServerValue.TIMESTAMP
+		});
 		player1.set({
 			player: player,
 			wins: 0,
@@ -98,7 +103,14 @@ $("#enterPlayer").on("click", function() {
 	// if there is no player 2
 	} else if (!p2snapshot.exists()) {
 		playerNum = 2;
+		// if player disconnects, remove them from the database
 		player2.onDisconnect().remove();
+		// if player disconnects, display in chat box
+		database.ref("/chat/connected").onDisconnect().update({
+			player: player,
+			taunt: " has disconnected",
+			dateAdded: firebase.database.ServerValue.TIMESTAMP
+		});
 		player2.set({
 			player: player,
 			wins: 0,
@@ -264,19 +276,26 @@ $("#p2choices").on("click", "div", function() {
 $("#taunt").on("click", function() {
 	event.preventDefault();
 	var message = $("#messageBox").val().trim();
+	$("#messageBox").val("");
 	if (playerNum == 1) {
-		p1chat.update({
-			chat: message
+		console.log("test");
+		playerChat.push({
+			player: p1 + ": ",
+			taunt: message,
+			dateAdded: firebase.database.ServerValue.TIMESTAMP
 		});
 	} else if (playerNum == 2) {
-		p2chat.update({
-			chat: message
+		playerChat.push({
+			player: p2 + ": ",
+			taunt: message,
+			dateAdded: firebase.database.ServerValue.TIMESTAMP
 		});
 	};
-	$("#messageBox").val("");
 });
 
-playerChat.on("child_added", function(snapshot) {
-	$("#chatbox").append(snapshot.val().p1chat);
+playerChat.orderByChild("dateAdded").on("child_added", function(snapshot) {
+	$("#chatbox").append(snapshot.val().player + snapshot.val().taunt + "<br>");
+	var bottom = $("#chatbox").get(0);
+    bottom.scrollTop = bottom.scrollHeight;
 });
 
