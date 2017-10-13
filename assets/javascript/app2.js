@@ -21,8 +21,8 @@ var p1snapshot;
 var p2snapshot;
 var p1result;
 var p2result;
-var p1;
-var p2;
+var p1 = null;
+var p2 = null;
 var wins1 = 0;
 var wins2 = 0;
 var losses1 = 0;
@@ -45,6 +45,14 @@ player1.on("value", function(snapshot) {
 	} else {
 		$("#p1name").html("Waiting for Player 1");
 		$("#p1stats").empty();
+		// Displays that player disconnected
+		if (p1 !== null) {
+			playerChat.push({
+				player: p1,
+				taunt: " has disconnected",
+				dateAdded: firebase.database.ServerValue.TIMESTAMP
+			});
+		};
 	};
 }, function(errorObject) {
 	console.log("The read failed: " + errorObject.code);
@@ -61,6 +69,14 @@ player2.on("value", function(snapshot) {
 	} else {
 		$("#p2name").html("Waiting for Player 2");
 		$("#p2stats").empty();
+		// Displays that player disconnected
+		if (p2 !== null) {
+			playerChat.push({
+				player: p2,
+				taunt: " has disconnected",
+				dateAdded: firebase.database.ServerValue.TIMESTAMP
+			});
+		};
 	};
 }, function(errorObject) {
 	console.log("The read failed: " + errorObject.code);
@@ -85,12 +101,6 @@ $("#enterPlayer").on("click", function() {
 		playerNum = 1;
 		// if player disconnects, remove them from the database
 		player1.onDisconnect().remove();
-		// if player disconnects, display in chat box
-		database.ref("/chat/connected").onDisconnect().update({
-			player: player,
-			taunt: " has disconnected",
-			dateAdded: firebase.database.ServerValue.TIMESTAMP
-		});
 		player1.set({
 			player: player,
 			wins: 0,
@@ -105,12 +115,6 @@ $("#enterPlayer").on("click", function() {
 		playerNum = 2;
 		// if player disconnects, remove them from the database
 		player2.onDisconnect().remove();
-		// if player disconnects, display in chat box
-		database.ref("/chat/connected").onDisconnect().update({
-			player: player,
-			taunt: " has disconnected",
-			dateAdded: firebase.database.ServerValue.TIMESTAMP
-		});
 		player2.set({
 			player: player,
 			wins: 0,
@@ -247,6 +251,7 @@ playerTurn.on("value", function(snapshot) {
 	};
 });
 
+// Displays player's choice while they wait for the other player
 $("#p1choices").on("click", "div", function() {
 	var choice = $(this).text();
 	$("#p1choices").html("<br><br><br><h1>" + choice + "</h1>");
@@ -293,6 +298,7 @@ $("#taunt").on("click", function() {
 	};
 });
 
+// Adds new messages to chat box and keeps the box scrolled down to most recent
 playerChat.orderByChild("dateAdded").on("child_added", function(snapshot) {
 	$("#chatbox").append(snapshot.val().player + snapshot.val().taunt + "<br>");
 	var bottom = $("#chatbox").get(0);

@@ -17,9 +17,6 @@ h2 {
 	margin-bottom: 15px;
 	text-align: center;
 }
-#playerName {
-	margin-right: 5px;
-}
 #container {
 	width: 75%;
 	margin: auto;
@@ -53,6 +50,7 @@ h2 {
 }
 #playerName {
 	width: 150px;
+	margin-right: 5px;
 }
 #p1stats, #p2stats {
 	position: absolute;
