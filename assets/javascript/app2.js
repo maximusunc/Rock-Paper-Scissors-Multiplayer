@@ -240,7 +240,9 @@ playerTurn.on("value", function(snapshot) {
 				$("#results").html("");
 				$("#p2choices").html("");
 				$("#player2").css("border-color", "black");
-				}, 1000*4);
+			}, 1000*4);
+			
+
 		};
 		// If both players leave, turn is deleted from database to reset for next game
 		if (snapshot.val().players == null) {
@@ -256,26 +258,22 @@ playerTurn.on("value", function(snapshot) {
 $("#p1choices").on("click", "div", function() {
 	var choice = $(this).text();
 	$("#p1choices").html("<br><br><br><h1>" + choice + "</h1>");
-	// setTimeout(function() {
 		playerTurn.update({
 			turn: 2
 		});
 		player1.update({
 			choice: choice
 		}); 
-	// }, 500);
 });
 $("#p2choices").on("click", "div", function() {
 	var choice = $(this).text();
 	$("#p2choices").html("<br><br><br><h1>" + choice + "</h1>");
-	// setTimeout(function() {
 		player2.update({
 			choice: choice
 		});
 		playerTurn.update({
 			turn: 3
 		});
-	// }, 500);
 });
 
 // Operation of the chat box below the player cards
