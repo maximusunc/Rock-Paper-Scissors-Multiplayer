@@ -13,6 +13,7 @@ var database = firebase.database();
 
 // each player enters in as their own folder in the database
 var playerTurn = database.ref();
+var players = database.ref("/players");
 var player1 = database.ref("/players/player1");
 var player2 = database.ref("/players/player2");
 var playerChat = database.ref("/chat");
@@ -129,6 +130,18 @@ $("#enterPlayer").on("click", function() {
 	} else {
 		$("#playerInfo").html("Sorry. Two people are already playing");
 	};
+});
+
+players.on("value", function(snapshot) {
+	// If both players leave, everything is deleted from database to reset for next game
+	if (snapshot.val() == null) {
+		$("#player1").css("border-color", "black");
+		$("#player2").css("border-color", "black");
+		playerTurn.set({
+		});
+	};
+}, function(errorObject) {
+	console.log("The read failed: " + errorObject.code);
 });
 
 
@@ -254,13 +267,6 @@ playerTurn.on("value", function(snapshot) {
 		} else if (snapshot.val().turn == 3) {
 			$("#playerTurn").html("");
 			rpsResults();
-		};
-		// If both players leave, turn is deleted from database to reset for next game
-		if (snapshot.val().players == null) {
-			$("#player1").css("border-color", "black");
-			$("#player2").css("border-color", "black");
-			playerTurn.set({
-			});
 		};
 	};
 });
