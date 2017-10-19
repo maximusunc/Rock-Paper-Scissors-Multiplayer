@@ -190,14 +190,28 @@ var rpsResults = function() {
 			playerTurn.update({
 				turn: 1
 			});
-			player1.update({
-				wins: wins1,
-				losses: losses1
+			player1.once("value", function(snapshot) {
+				p1result = snapshot;
+			}, function(errorObject) {
+				console.log("The read failed: " + errorObject.code);
 			});
-			player2.update({
-				wins: wins2,
-				losses: losses2
+			if (p1result.val() !== null) {
+				player1.update({
+					wins: wins1,
+					losses: losses1
+				});
+			};
+			player2.once("value", function(snapshot) {
+				p2result = snapshot;
+			}, function(errorObject) {
+				console.log("The read failed: " + errorObject.code);
 			});
+			if (p2result.val() !== null) {
+				player2.update({
+					wins: wins2,
+					losses: losses2
+				});
+			};
 			$("#results").html("");
 			$("#p2choices").html("");
 			$("#player2").css("border-color", "black");
