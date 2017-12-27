@@ -14,7 +14,7 @@ Here's how the game works!
 ![Sign In](assets/images/RPS_Homepage.png)<br>
 2: Once they input a name, Firebase checks to see how many players have already joined. If there aren't any or just one, it puts them in the database as the respective player. If there are already two players, it will notify that person and not let them join.
 <br>
-![Player Sign In](assets/images/RPS_P1_Signing.png)<br>
+![Player Sign In](assets/images/RPS_P1_Signin.png)<br>
 3: Once two people have joined, the game starts and player 1's box highlights and they may choose their item.
 <br>
 ![Game Start](assets/images/RPS_P1_Choices.png)<br>
