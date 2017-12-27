@@ -10,7 +10,7 @@ Technologies include:
 Here's how the game works!
 
 1: Whenever someone comes to the page, it asks them for their name.
-![Sign In](assets/images/RPS_Chat)<br>
+![Sign In](assets/images/RPS_Chat.png)<br>
 2: Once they input a name, Firebase checks to see how many players have already joined. If there aren't any or just one, it puts them in the database as the respective player. If there are already two players, it will notify that person and not let them join.
 
 3: Once two people have joined, the game starts and player 1's box highlights and they may choose their item.
