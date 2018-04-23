@@ -17,6 +17,7 @@ var players = database.ref("/players");
 var player1 = database.ref("/players/player1");
 var player2 = database.ref("/players/player2");
 var playerChat = database.ref("/chat");
+// Initialize all global variables
 var player;
 var p1snapshot;
 var p2snapshot;
@@ -99,34 +100,40 @@ $("#enterPlayer").on("click", function() {
 	});
 	// if there is no player 1
 	if (!p1snapshot.exists()) {
+		// sets local variable of player number, to know which page to display choices on and who is taunting
 		playerNum = 1;
 		// if player disconnects, remove them from the database
 		player1.onDisconnect().remove();
+		// sets a new player 1
 		player1.set({
 			player: player,
 			wins: 0,
 			losses: 0
 		});
 		$("#playerInfo").html("Hi " + player + "! You are Player 1");
+		// If there is no player 2
 		if (!p2snapshot.exists()) {
 			$("#playerTurn").html("Waiting for Player 2 to join...");
 		};
 	// if there is no player 2
 	} else if (!p2snapshot.exists()) {
+		// sets local variable of player number, to know which page to display choices on and who is taunting
 		playerNum = 2;
 		// if player disconnects, remove them from the database
 		player2.onDisconnect().remove();
+		// sets a new player 2
 		player2.set({
 			player: player,
 			wins: 0,
 			losses: 0
 		});
+		// This starts the game
 		playerTurn.update({
 			turn: 1
 		});
 		$("#playerInfo").html("Hi " + player + "! You are Player 2");
 		$("#playerTurn").html("Waiting for " + p1 + " to choose.");
-	// if both players have already joined
+	// if both players have already joined, don't let a third join
 	} else {
 		$("#playerInfo").html("Sorry. Two people are already playing");
 	};
@@ -137,8 +144,7 @@ players.on("value", function(snapshot) {
 	if (snapshot.val() == null) {
 		$("#player1").css("border-color", "black");
 		$("#player2").css("border-color", "black");
-		playerTurn.set({
-		});
+		playerTurn.set({});
 	};
 }, function(errorObject) {
 	console.log("The read failed: " + errorObject.code);
@@ -147,6 +153,7 @@ players.on("value", function(snapshot) {
 
 // Results checker
 var rpsResults = function() {
+	// once this function is called, grabs both players' data
 	player1.once("value", function(snapshot) {
 		p1result = snapshot;
 	}, function(errorObject) {
@@ -157,41 +164,49 @@ var rpsResults = function() {
 	}, function(errorObject) {
 		console.log("The read failed: " + errorObject.code);
 	});
+	// Logic for round result
 	if (p1result.val() !== null && p2result.val() !== null) {
+		// If both players choose the same item
 		if (p1result.val().choice == p2result.val().choice) {
 			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
 			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
 			$("#results").html("<br><br><br><br><br><h1>Tie Game!</h1>");
+		// Player one wins
 		} else if (p1result.val().choice == "Rock" && p2result.val().choice == "Scissors") {
 			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
 			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
 			$("#results").html("<br><br><br><br><br><h1>" + p1 + " wins!</h1>");
 			wins1++;
 			losses2++;
+		// Player two wins
 		} else if (p1result.val().choice == "Rock" && p2result.val().choice == "Paper") {
 			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
 			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
 			$("#results").html("<br><br><br><br><br><h1>" + p2 + " wins!</h1>");
 			wins2++;
 			losses1++;
+		// Player two wins
 		} else if (p1result.val().choice == "Paper" && p2result.val().choice == "Scissors") {
 			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
 			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
 			$("#results").html("<br><br><br><br><br><h1>" + p2 + " wins!</h1>");
 			wins2++;
 			losses1++;
+		// Player one wins
 		} else if (p1result.val().choice == "Paper" && p2result.val().choice == "Rock") {
 			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
 			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
 			$("#results").html("<br><br><br><br><br><h1>" + p1 + " wins!</h1>");
 			wins1++;
 			losses2++;
+		// Player one wins
 		} else if (p1result.val().choice == "Scissors" && p2result.val().choice == "Paper") {
 			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
 			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
 			$("#results").html("<br><br><br><br><br><h1>" + p1 + " wins!</h1>");
 			wins1++;
 			losses2++;
+		// Player two wins
 		} else if (p1result.val().choice == "Scissors" && p2result.val().choice == "Rock") {
 			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
 			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
@@ -199,6 +214,7 @@ var rpsResults = function() {
 			wins2++;
 			losses1++;
 		};
+		// After results are calculated, reset the round in 4 seconds
 		setTimeout(function() {
 			playerTurn.update({
 				turn: 1
@@ -263,7 +279,7 @@ playerTurn.on("value", function(snapshot) {
 			$("#p2choices").append("<div>Paper</div>");
 			$("#p2choices").append("<div>Scissors</div>");
 			$("#playerTurn").html("It's your turn!");
-		// After both turns, show result to both pages and then make player 1's turn
+		// After both turns, call rpsResults
 		} else if (snapshot.val().turn == 3) {
 			$("#playerTurn").html("");
 			rpsResults();
@@ -303,7 +319,6 @@ $("#taunt").on("click", function() {
 	var message = $("#messageBox").val().trim();
 	$("#messageBox").val("");
 	if (playerNum == 1) {
-		console.log("test");
 		playerChat.push({
 			player: p1 + ": ",
 			taunt: message,
