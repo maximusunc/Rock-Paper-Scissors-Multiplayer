@@ -5,6 +5,7 @@ Technologies include:
 - HTML
 - CSS
 - Javascript
+- JQuery
 - Google Firebase
 
 Here's how the game works!
