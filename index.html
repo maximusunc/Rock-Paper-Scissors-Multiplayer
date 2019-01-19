@@ -1,38 +1,44 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<head>
-	<meta charset="UTF-8">
-	<title>Max's RPS Multiplayer Game</title>
-	<link rel="icon" href="assets/images/favicon.ico?v=1.1">
-	<link rel="stylesheet" type="text/css" href="assets/css/reset.css">
-	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
-	<script
-  		src="https://code.jquery.com/jquery-3.2.1.min.js"
-  		integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-  		crossorigin="anonymous"></script>
-  	<script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
-</head>
-<body>
-	<h1>RPS Multiplayer</h1>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Max's RPS Multiplayer Game</title>
+        <link rel="icon" href="assets/images/favicon.ico?v=1.1" />
+        <link rel="stylesheet" type="text/css" href="assets/css/reset.css" />
+        <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+        <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"
+        ></script>
+        <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+    </head>
+    <body>
+        <h1>RPS Multiplayer</h1>
 
-	<div id="container">
-		<div id="playerInfo"></div>
-		<div id="playerTurn"></div>
-		<div id="player1">
-			<div id="p1name">Waiting for Player 1</div>
-			<div id="p1choices"></div>
-			<div id="p1stats"></div>
-		</div>
-		<div id="results"></div>
-		<div id="player2">
-			<div id="p2name">Waiting for Player 2</div>
-			<div id="p2choices"></div>
-			<div id="p2stats"></div>
-		</div>
-		<div id="chatbox"></div>
-		<form id="messageBar"><input id="messageBox" type="text"><input id="taunt" type="submit" value="Taunt"></form>
-	</div>
+        <div id="container">
+            <div id="playerInfo"></div>
+            <div id="playerTurn"></div>
+            <div id="playingArea">
+                <div id="player1">
+                    <div id="p1name">Waiting for Player 1</div>
+                    <div id="p1choices"></div>
+                    <div id="p1stats"></div>
+                </div>
+                <div id="results"></div>
+                <div id="player2">
+                    <div id="p2name">Waiting for Player 2</div>
+                    <div id="p2choices"></div>
+                    <div id="p2stats"></div>
+                </div>
+            </div>
+        </div>
+        <div id="chatbox"></div>
+        <form id="messageBar">
+            <input id="messageBox" type="text" />
+            <button id="taunt" type="submit">Taunt</button>
+        </form>
 
-<script src="assets/javascript/app.js"></script>
-</body>
+        <script src="assets/javascript/app.js"></script>
+    </body>
 </html>

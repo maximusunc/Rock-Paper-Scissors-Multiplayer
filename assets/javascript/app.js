@@ -32,7 +32,7 @@ var losses2 = 0;
 var playerNum = 0;
 
 // initial submit form to enter as a player
-$("#playerInfo").html("<input id=playerName type=text placeholder='Enter your name to begin'><input id=enterPlayer type=submit value=Start>");
+$("#playerInfo").html("<form><input id=playerName type=text placeholder='Enter your name to begin'><input id=enterPlayer type=submit value=Start></form>");
 
 
 
@@ -85,57 +85,63 @@ player2.on("value", function(snapshot) {
 });
 
 // On Submit button, added player depending on who is already in the firebase database by checking if exists
-$("#enterPlayer").on("click", function() {
+$("#enterPlayer").on("click", function(event) {
 	event.preventDefault();
+	var regex = /(^([a-zA-Z]{2,})?(\s?[a-zA-Z]{2,}$))/;
 	player = $("#playerName").val().trim();
-	player1.once("value", function(snapshot) {
-		p1snapshot = snapshot;
-	}, function(errorObject) {
-		console.log("The read failed: " + errorObject.code);
-	});
-	player2.once("value", function(snapshot) {
-		p2snapshot = snapshot;
-	}, function(errorObject) {
-		console.log("The read failed: " + errorObject.code);
-	});
-	// if there is no player 1
-	if (!p1snapshot.exists()) {
-		// sets local variable of player number, to know which page to display choices on and who is taunting
-		playerNum = 1;
-		// if player disconnects, remove them from the database
-		player1.onDisconnect().remove();
-		// sets a new player 1
-		player1.set({
-			player: player,
-			wins: 0,
-			losses: 0
+	if (regex.test(player)) {
+		player1.once("value", function(snapshot) {
+			p1snapshot = snapshot;
+		}, function(errorObject) {
+			console.log("The read failed: " + errorObject.code);
 		});
-		$("#playerInfo").html("Hi " + player + "! You are Player 1");
-		// If there is no player 2
-		if (!p2snapshot.exists()) {
-			$("#playerTurn").html("Waiting for Player 2 to join...");
+		player2.once("value", function(snapshot) {
+			p2snapshot = snapshot;
+		}, function(errorObject) {
+			console.log("The read failed: " + errorObject.code);
+		});
+		// if there is no player 1
+		if (!p1snapshot.exists()) {
+			// sets local variable of player number, to know which page to display choices on and who is taunting
+			playerNum = 1;
+			// if player disconnects, remove them from the database
+			player1.onDisconnect().remove();
+			// sets a new player 1
+			player1.set({
+				player: player,
+				wins: 0,
+				losses: 0
+			});
+			$("#playerInfo").html("Hi " + player + "! You are Player 1");
+			// If there is no player 2
+			if (!p2snapshot.exists()) {
+				$("#playerTurn").html("Waiting for Player 2 to join...");
+			};
+		// if there is no player 2
+		} else if (!p2snapshot.exists()) {
+			// sets local variable of player number, to know which page to display choices on and who is taunting
+			playerNum = 2;
+			// if player disconnects, remove them from the database
+			player2.onDisconnect().remove();
+			// sets a new player 2
+			player2.set({
+				player: player,
+				wins: 0,
+				losses: 0
+			});
+			// This starts the game
+			playerTurn.update({
+				turn: 1
+			});
+			$("#playerInfo").html("Hi " + player + "! You are Player 2");
+			$("#playerTurn").html("Waiting for " + p1 + " to choose.");
+		// if both players have already joined, don't let a third join
+		} else {
+			$("#playerInfo").html("Sorry. Two people are already playing");
 		};
-	// if there is no player 2
-	} else if (!p2snapshot.exists()) {
-		// sets local variable of player number, to know which page to display choices on and who is taunting
-		playerNum = 2;
-		// if player disconnects, remove them from the database
-		player2.onDisconnect().remove();
-		// sets a new player 2
-		player2.set({
-			player: player,
-			wins: 0,
-			losses: 0
-		});
-		// This starts the game
-		playerTurn.update({
-			turn: 1
-		});
-		$("#playerInfo").html("Hi " + player + "! You are Player 2");
-		$("#playerTurn").html("Waiting for " + p1 + " to choose.");
-	// if both players have already joined, don't let a third join
 	} else {
-		$("#playerInfo").html("Sorry. Two people are already playing");
+		alert("Please enter a valid name. Your name can be up to two words.");
+		$("#playerName").val("");
 	};
 });
 
@@ -168,49 +174,49 @@ var rpsResults = function() {
 	if (p1result.val() !== null && p2result.val() !== null) {
 		// If both players choose the same item
 		if (p1result.val().choice == p2result.val().choice) {
-			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
-			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-			$("#results").html("<br><br><br><br><br><h1>Tie Game!</h1>");
+			$("#p1choices").html("<h1>" + p1result.val().choice + "</h1>");
+			$("#p2choices").html("<h1>" + p2result.val().choice + "</h1>");
+			$("#results").html("<h1>Tie Game!</h1>");
 		// Player one wins
 		} else if (p1result.val().choice == "Rock" && p2result.val().choice == "Scissors") {
-			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
-			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-			$("#results").html("<br><br><br><br><br><h1>" + p1 + " wins!</h1>");
+			$("#p1choices").html("<h1>" + p1result.val().choice + "</h1>");
+			$("#p2choices").html("<h1>" + p2result.val().choice + "</h1>");
+			$("#results").html("<h1>" + p1 + " wins!</h1>");
 			wins1++;
 			losses2++;
 		// Player two wins
 		} else if (p1result.val().choice == "Rock" && p2result.val().choice == "Paper") {
-			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
-			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-			$("#results").html("<br><br><br><br><br><h1>" + p2 + " wins!</h1>");
+			$("#p1choices").html("<h1>" + p1result.val().choice + "</h1>");
+			$("#p2choices").html("<h1>" + p2result.val().choice + "</h1>");
+			$("#results").html("<h1>" + p2 + " wins!</h1>");
 			wins2++;
 			losses1++;
 		// Player two wins
 		} else if (p1result.val().choice == "Paper" && p2result.val().choice == "Scissors") {
-			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
-			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-			$("#results").html("<br><br><br><br><br><h1>" + p2 + " wins!</h1>");
+			$("#p1choices").html("<h1>" + p1result.val().choice + "</h1>");
+			$("#p2choices").html("<h1>" + p2result.val().choice + "</h1>");
+			$("#results").html("<h1>" + p2 + " wins!</h1>");
 			wins2++;
 			losses1++;
 		// Player one wins
 		} else if (p1result.val().choice == "Paper" && p2result.val().choice == "Rock") {
-			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
-			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-			$("#results").html("<br><br><br><br><br><h1>" + p1 + " wins!</h1>");
+			$("#p1choices").html("<h1>" + p1result.val().choice + "</h1>");
+			$("#p2choices").html("<h1>" + p2result.val().choice + "</h1>");
+			$("#results").html("<h1>" + p1 + " wins!</h1>");
 			wins1++;
 			losses2++;
 		// Player one wins
 		} else if (p1result.val().choice == "Scissors" && p2result.val().choice == "Paper") {
-			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
-			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-			$("#results").html("<br><br><br><br><br><h1>" + p1 + " wins!</h1>");
+			$("#p1choices").html("<h1>" + p1result.val().choice + "</h1>");
+			$("#p2choices").html("<h1>" + p2result.val().choice + "</h1>");
+			$("#results").html("<h1>" + p1 + " wins!</h1>");
 			wins1++;
 			losses2++;
 		// Player two wins
 		} else if (p1result.val().choice == "Scissors" && p2result.val().choice == "Rock") {
-			$("#p1choices").html("<br><br><br><h1>" + p1result.val().choice + "</h1>");
-			$("#p2choices").html("<br><br><br><h1>" + p2result.val().choice + "</h1>");
-			$("#results").html("<br><br><br><br><br><h1>" + p2 + " wins!</h1>");
+			$("#p1choices").html("<h1>" + p1result.val().choice + "</h1>");
+			$("#p2choices").html("<h1>" + p2result.val().choice + "</h1>");
+			$("#results").html("<h1>" + p2 + " wins!</h1>");
 			wins2++;
 			losses1++;
 		};
@@ -290,7 +296,7 @@ playerTurn.on("value", function(snapshot) {
 // Displays player's choice while they wait for the other player
 $("#p1choices").on("click", "div", function() {
 	var choice = $(this).text();
-	$("#p1choices").html("<br><br><br><h1>" + choice + "</h1>");
+	$("#p1choices").html("<h1>" + choice + "</h1>");
 	setTimeout(function() {
 		playerTurn.update({
 			turn: 2
@@ -302,7 +308,7 @@ $("#p1choices").on("click", "div", function() {
 });
 $("#p2choices").on("click", "div", function() {
 	var choice = $(this).text();
-	$("#p2choices").html("<br><br><br><h1>" + choice + "</h1>");
+	$("#p2choices").html("<h1>" + choice + "</h1>");
 	setTimeout(function() {
 		player2.update({
 			choice: choice
@@ -314,7 +320,7 @@ $("#p2choices").on("click", "div", function() {
 });
 
 // Operation of the chat box below the player cards
-$("#taunt").on("click", function() {
+$("#taunt").on("click", function(event) {
 	event.preventDefault();
 	var message = $("#messageBox").val().trim();
 	$("#messageBox").val("");
